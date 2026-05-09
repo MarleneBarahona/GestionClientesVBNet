@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeBehind="Clientes.aspx.vb" Inherits="GestionClientesApp.Clientes" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeBehind="Clientes.aspx.vb" Inherits="GestionClientesApp.Clientes" ResponseEncoding="utf-8" %>
 
 <!DOCTYPE html>
 
@@ -9,7 +9,11 @@
 <body>
 
     <form id="form1" runat="server">
-
+        <asp:Button
+            ID="btnCerrarSesion"
+            runat="server"
+            Text="Cerrar Sesión"
+            OnClick="btnCerrarSesion_Click" />
         <div style="width:900px; margin:auto; margin-top:30px;">
 
             <h2>Gestión de Clientes</h2>

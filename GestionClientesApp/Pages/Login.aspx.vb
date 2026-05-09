@@ -7,6 +7,33 @@ Partial Class Login
     Protected Sub btnLogin_Click(sender As Object, e As EventArgs)
 
         Try
+            lblMensaje.Text = ""
+
+            txtUsuario.BorderColor = Drawing.Color.Empty
+            txtPassword.BorderColor = Drawing.Color.Empty
+
+            'Valida Usuario no esté vacío
+            If txtUsuario.Text.Trim() = "" Then
+
+                txtUsuario.BorderColor = Drawing.Color.Red
+
+                lblMensaje.ForeColor = Drawing.Color.Red
+                lblMensaje.Text = "Ingrese el usuario"
+
+                Exit Sub
+
+            End If
+            'Valida Contraseña no esté vacío
+            If txtPassword.Text.Trim() = "" Then
+
+                txtPassword.BorderColor = Drawing.Color.Red
+
+                lblMensaje.ForeColor = Drawing.Color.Red
+                lblMensaje.Text = "Ingrese la contraseña"
+
+                Exit Sub
+
+            End If
 
             Using conexionDB As SqlConnection = Conexion.ObtenerConexion()
 
@@ -29,6 +56,7 @@ Partial Class Login
 
                     Dim resultado = cmd.ExecuteScalar()
 
+                    'Si credenciales son correctas, redirige a pagina Clientes
                     If resultado IsNot Nothing Then
 
                         Session("Usuario") = resultado.ToString()
@@ -36,9 +64,8 @@ Partial Class Login
                         Response.Redirect("Clientes.aspx")
 
                     Else
-
+                        lblMensaje.ForeColor = Drawing.Color.Red
                         lblMensaje.Text = "Usuario o contraseña incorrectos"
-
                     End If
 
                 End Using

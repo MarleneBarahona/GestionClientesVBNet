@@ -9,14 +9,14 @@ Public Class Seguridad
 
             Dim bytes As Byte() = Encoding.UTF8.GetBytes(texto)
 
+            'Genera Hash
             Dim hash As Byte() = sha256.ComputeHash(bytes)
 
             Dim resultado As New StringBuilder()
 
+            'Recorre y onvierte Byte por Byte en Hexa
             For Each b As Byte In hash
-
                 resultado.Append(b.ToString("x2"))
-
             Next
 
             Return resultado.ToString()

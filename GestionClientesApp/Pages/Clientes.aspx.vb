@@ -1,11 +1,13 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Text.RegularExpressions
 
 Partial Class Clientes
     Inherits System.Web.UI.Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
 
+        'Valida sesion. Regresa al Login en dado caso no hay sesion vigente
         If Session("Usuario") Is Nothing Then
             Response.Redirect("Login.aspx")
         End If
@@ -13,7 +15,7 @@ Partial Class Clientes
         If Not IsPostBack Then
             CargarClientes()
         End If
-        Response.Write(Seguridad.ObtenerSHA256("admin123"))
+        'Response.Write(Seguridad.ObtenerSHA256("admin123")) quitarlo al subir a git
     End Sub
 
     Private Sub CargarClientes()
@@ -66,26 +68,76 @@ Partial Class Clientes
     End Sub
     Protected Sub btnGuardar_Click(sender As Object, e As EventArgs)
 
-        If txtNombre.Text.Trim = "" Then
+        'Valida campo Nombre no esté vacío
+        If txtNombre.Text.Trim() = "" Then
+            txtNombre.BorderColor = Drawing.Color.Red
+            lblMensaje.ForeColor = Drawing.Color.Red
             lblMensaje.Text = "Ingrese el nombre"
             Exit Sub
+        Else
+            txtNombre.BorderColor = Drawing.Color.Empty
         End If
 
-        If txtApellido.Text.Trim = "" Then
+        'Valida campo Apellido no esté vacío
+        If txtApellido.Text.Trim() = "" Then
+            txtApellido.BorderColor = Drawing.Color.Red
+            lblMensaje.ForeColor = Drawing.Color.Red
             lblMensaje.Text = "Ingrese el apellido"
             Exit Sub
+        Else
+            txtApellido.BorderColor = Drawing.Color.Empty
         End If
 
-        If txtCorreo.Text.Trim = "" Then
+        'Valida campo Correo no esté vacío
+        If txtCorreo.Text.Trim() = "" Then
+            txtCorreo.BorderColor = Drawing.Color.Red
+            lblMensaje.ForeColor = Drawing.Color.Red
             lblMensaje.Text = "Ingrese el correo electronico"
             Exit Sub
+        Else
+            txtCorreo.BorderColor = Drawing.Color.Empty
         End If
 
+        'Valida campo Correo cumple con formato minimo
         If Not txtCorreo.Text.Contains("@") Then
+            txtCorreo.BorderColor = Drawing.Color.Red
+            lblMensaje.ForeColor = Drawing.Color.Red
             lblMensaje.Text = "Correo electronico inválido"
             Exit Sub
+        Else
+            txtCorreo.BorderColor = Drawing.Color.Empty
         End If
 
+        'Valida campo Telefono no esté vacío
+        If txtTelefono.Text.Trim() = "" Then
+            txtTelefono.BorderColor = Drawing.Color.Red
+            lblMensaje.ForeColor = Drawing.Color.Red
+            lblMensaje.Text = "Ingrese el número de telefono"
+            Exit Sub
+        Else
+            txtTelefono.BorderColor = Drawing.Color.Empty
+        End If
+
+        'Valida campo Telefono cumple con formato
+        If Not Regex.IsMatch(txtTelefono.Text.Trim(), "^\d{4}-\d{4}$") Then
+            txtTelefono.BorderColor = Drawing.Color.Red
+            lblMensaje.ForeColor = Drawing.Color.Red
+            lblMensaje.Text = "Formato de telefono inválido. Use ####-####"
+            Exit Sub
+
+        End If
+
+        'Valida campo Direccion no esté vacío
+        If txtDireccion.Text.Trim() = "" Then
+            txtDireccion.BorderColor = Drawing.Color.Red
+            lblMensaje.ForeColor = Drawing.Color.Red
+            lblMensaje.Text = "Ingrese la dirección"
+            Exit Sub
+        Else
+            txtDireccion.BorderColor = Drawing.Color.Empty
+        End If
+
+        'Guardar cambios en BD
         Try
 
             Using conexionDB As SqlConnection = Conexion.ObtenerConexion()
@@ -94,6 +146,7 @@ Partial Class Clientes
 
                 Dim query As String = ""
 
+                'Valida si no hay IdCliente, es porque es nuevo
                 If String.IsNullOrEmpty(hfIdCliente.Value) Then
 
                     query = "
@@ -118,6 +171,7 @@ Partial Class Clientes
                     SELECT SCOPE_IDENTITY()
                 "
 
+                    'Valida si sí hay IdCliente, es porque es ya existente
                 Else
 
                     query = "
@@ -141,12 +195,6 @@ Partial Class Clientes
                     cmd.Parameters.AddWithValue("@Correo", txtCorreo.Text.Trim())
                     cmd.Parameters.AddWithValue("@Telefono", txtTelefono.Text.Trim())
                     cmd.Parameters.AddWithValue("@Direccion", txtDireccion.Text.Trim())
-
-                    'If Not String.IsNullOrEmpty(hfIdCliente.Value) Then
-
-                    '    cmd.Parameters.AddWithValue("@IdCliente", hfIdCliente.Value)
-
-                    'End If
 
                     If String.IsNullOrEmpty(hfIdCliente.Value) Then
 
@@ -180,6 +228,7 @@ Partial Class Clientes
             End Using
 
             lblMensaje.Text = "Registro guardado correctamente"
+            lblMensaje.ForeColor = Drawing.Color.Green
 
             LimpiarFormulario()
 
@@ -215,6 +264,7 @@ Partial Class Clientes
 
                 conexionDB.Open()
 
+                'Hace un procesa de desactivacion del cliente, no lo elimina por completo de la BD
                 Dim query As String = "
                     UPDATE Clientes
                     SET Activo = 0,
@@ -239,6 +289,7 @@ Partial Class Clientes
             End Using
 
             lblMensaje.Text = "Cliente eliminado correctamente"
+            lblMensaje.ForeColor = Drawing.Color.Green
 
             LimpiarFormulario()
 
@@ -258,11 +309,21 @@ Partial Class Clientes
 
         hfIdCliente.Value = gvClientes.DataKeys(fila.RowIndex).Value.ToString()
 
-        txtNombre.Text = fila.Cells(2).Text
-        txtApellido.Text = fila.Cells(3).Text
-        txtCorreo.Text = fila.Cells(4).Text
-        txtTelefono.Text = fila.Cells(5).Text
-        txtDireccion.Text = fila.Cells(6).Text
+        txtNombre.Text = Server.HtmlDecode(fila.Cells(2).Text)
+        txtApellido.Text = Server.HtmlDecode(fila.Cells(3).Text)
+        txtCorreo.Text = Server.HtmlDecode(fila.Cells(4).Text)
+        txtTelefono.Text = Server.HtmlDecode(fila.Cells(5).Text)
+        txtDireccion.Text = Server.HtmlDecode(fila.Cells(6).Text)
 
     End Sub
+    Protected Sub btnCerrarSesion_Click(sender As Object, e As EventArgs)
+
+        Session.Clear()
+
+        Session.Abandon()
+
+        Response.Redirect("Login.aspx")
+
+    End Sub
+
 End Class
