@@ -22,7 +22,10 @@ Partial Class Login
                 Using cmd As New SqlCommand(query, conexionDB)
 
                     cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text.Trim())
-                    cmd.Parameters.AddWithValue("@Password", txtPassword.Text.Trim())
+                    Dim passwordHash As String =
+                    Seguridad.ObtenerSHA256(txtPassword.Text.Trim())
+
+                    cmd.Parameters.AddWithValue("@Password", passwordHash)
 
                     Dim resultado = cmd.ExecuteScalar()
 

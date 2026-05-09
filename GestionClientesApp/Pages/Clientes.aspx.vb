@@ -13,7 +13,7 @@ Partial Class Clientes
         If Not IsPostBack Then
             CargarClientes()
         End If
-
+        Response.Write(Seguridad.ObtenerSHA256("admin123"))
     End Sub
 
     Private Sub CargarClientes()
@@ -27,6 +27,7 @@ Partial Class Clientes
                 Dim query As String = "
                     SELECT *
                     FROM Clientes
+                    WHERE Activo = 1
                     ORDER BY IdCliente DESC
                 "
 
@@ -64,6 +65,26 @@ Partial Class Clientes
 
     End Sub
     Protected Sub btnGuardar_Click(sender As Object, e As EventArgs)
+
+        If txtNombre.Text.Trim = "" Then
+            lblMensaje.Text = "Ingrese el nombre"
+            Exit Sub
+        End If
+
+        If txtApellido.Text.Trim = "" Then
+            lblMensaje.Text = "Ingrese el apellido"
+            Exit Sub
+        End If
+
+        If txtCorreo.Text.Trim = "" Then
+            lblMensaje.Text = "Ingrese el correo electronico"
+            Exit Sub
+        End If
+
+        If Not txtCorreo.Text.Contains("@") Then
+            lblMensaje.Text = "Correo electronico inválido"
+            Exit Sub
+        End If
 
         Try
 
@@ -174,6 +195,8 @@ Partial Class Clientes
 
     Protected Sub btnNuevo_Click(sender As Object, e As EventArgs)
 
+        LimpiarFormulario()
+
     End Sub
 
     Protected Sub btnEliminar_Click(sender As Object, e As EventArgs)
@@ -193,9 +216,11 @@ Partial Class Clientes
                 conexionDB.Open()
 
                 Dim query As String = "
-                DELETE FROM Clientes
-                WHERE IdCliente = @IdCliente
-            "
+                    UPDATE Clientes
+                    SET Activo = 0,
+                    FechaUltimaModificacion = GETDATE()
+                    WHERE IdCliente = @IdCliente
+                    "
 
                 Using cmd As New SqlCommand(query, conexionDB)
 
@@ -203,6 +228,12 @@ Partial Class Clientes
 
                     cmd.ExecuteNonQuery()
 
+                    BitacoraHelper.RegistrarAccion(
+                        "Clientes",
+                        Convert.ToInt32(hfIdCliente.Value),
+                        "DELETE",
+                        Session("Usuario").ToString()
+                    )
                 End Using
 
             End Using
