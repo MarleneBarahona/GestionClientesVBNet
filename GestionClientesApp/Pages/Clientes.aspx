@@ -5,9 +5,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Gestión de Clientes</title>
+    <link href="../Content/Site.css" rel="stylesheet" />
 </head>
 <body>
-
+    <div class="contenedor">
     <form id="form1" runat="server">
         <asp:Button
             ID="btnCerrarSesion"
@@ -52,7 +53,7 @@
                         <asp:TextBox 
                             ID="txtDireccion" 
                             runat="server"
-                            Width="400px">
+                            Width="610px">
                         </asp:TextBox>
                     </td>
                 </tr>
@@ -76,7 +77,11 @@
                 OnClick="btnNuevo_Click" />
 
             <br /><br />
-
+            <asp:Label 
+                ID="lblMensaje" 
+                runat="server"
+                ForeColor="Red">
+            </asp:Label>
             <asp:GridView 
                 ID="gvClientes" 
                 runat="server"
@@ -84,7 +89,8 @@
                 DataKeyNames="IdCliente"
                 Width="100%"
                 AutoGenerateSelectButton="True"
-                OnSelectedIndexChanged="gvClientes_SelectedIndexChanged">
+                OnSelectedIndexChanged="gvClientes_SelectedIndexChanged"
+                CssClass="gridview">
 
                 <Columns>
 
@@ -109,15 +115,9 @@
 
             <br /><br />
 
-            <asp:Label 
-                ID="lblMensaje" 
-                runat="server"
-                ForeColor="Red">
-            </asp:Label>
-
         </div>
 
     </form>
-
+</div>
 </body>
 </html>
