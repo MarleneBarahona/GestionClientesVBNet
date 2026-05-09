@@ -88,13 +88,33 @@
                 AutoGenerateColumns="False"
                 DataKeyNames="IdCliente"
                 Width="100%"
-                AutoGenerateSelectButton="True"
-                OnSelectedIndexChanged="gvClientes_SelectedIndexChanged"
+                OnRowCommand="gvClientes_RowCommand"
                 CssClass="gridview">
 
                 <Columns>
-
                     <asp:BoundField DataField="IdCliente" HeaderText="ID" />
+                     <asp:TemplateField HeaderText="Acciones">
+                        <ItemTemplate>
+                            <asp:LinkButton
+                                ID="btnEditar"
+                                runat="server"
+                                Text="✏ Editar"
+                                CommandName="Editar"
+                                CommandArgument='<%# Container.DataItemIndex %>'
+                                CssClass="btnEditar" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Acciones">
+                        <ItemTemplate>
+                            <asp:LinkButton
+                                ID="btnEliminar"
+                                runat="server"
+                                Text="Eliminar"
+                                CommandName="Eliminar"
+                                CommandArgument='<%# Container.DataItemIndex %>'
+                                CssClass="btnEliminar" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
                     <asp:BoundField DataField="Apellido" HeaderText="Apellido" />
                     <asp:BoundField DataField="Correo" HeaderText="Correo" />
@@ -106,14 +126,6 @@
             </asp:GridView>
 
             <br />
-
-            <asp:Button 
-                ID="btnEliminar" 
-                runat="server" 
-                Text="Eliminar"
-                OnClick="btnEliminar_Click" />
-
-            <br /><br />
 
         </div>
 

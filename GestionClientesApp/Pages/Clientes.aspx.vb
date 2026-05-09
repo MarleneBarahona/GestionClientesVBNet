@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Reflection
 Imports System.Text.RegularExpressions
 
 Partial Class Clientes
@@ -315,6 +316,61 @@ Partial Class Clientes
         txtTelefono.Text = Server.HtmlDecode(fila.Cells(5).Text)
         txtDireccion.Text = Server.HtmlDecode(fila.Cells(6).Text)
 
+    End Sub
+
+    Protected Sub gvClientes_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        Dim fila As GridViewRow = CType(CType(e.CommandSource, Control).NamingContainer, GridViewRow)
+
+        hfIdCliente.Value = gvClientes.DataKeys(fila.RowIndex).Value.ToString()
+
+        If e.CommandName = "Editar" Then
+            txtNombre.Text = Server.HtmlDecode(fila.Cells(3).Text)
+            txtApellido.Text = Server.HtmlDecode(fila.Cells(4).Text)
+            txtCorreo.Text = Server.HtmlDecode(fila.Cells(5).Text)
+            txtTelefono.Text = Server.HtmlDecode(fila.Cells(6).Text)
+            txtDireccion.Text = Server.HtmlDecode(fila.Cells(7).Text)
+        ElseIf e.CommandName = "Eliminar" Then
+
+            Try
+                Using conexionDB As SqlConnection = Conexion.ObtenerConexion()
+
+                    conexionDB.Open()
+
+                    'Hace un procesa de desactivacion del cliente, no lo elimina por completo de la BD
+                    Dim query As String = "
+                    UPDATE Clientes
+                    SET Activo = 0,
+                    FechaUltimaModificacion = GETDATE()
+                    WHERE IdCliente = @IdCliente
+                    "
+
+                    Using cmd As New SqlCommand(query, conexionDB)
+
+                        cmd.Parameters.AddWithValue("@IdCliente", hfIdCliente.Value)
+
+                        cmd.ExecuteNonQuery()
+
+                        BitacoraHelper.RegistrarAccion(
+                            "Clientes",
+                            Convert.ToInt32(hfIdCliente.Value),
+                            "DELETE",
+                            Session("Usuario").ToString()
+                        )
+                    End Using
+
+                End Using
+
+                lblMensaje.Text = "Cliente eliminado correctamente"
+                lblMensaje.ForeColor = Drawing.Color.Green
+
+                CargarClientes()
+
+            Catch ex As Exception
+
+                lblMensaje.Text = ex.Message
+
+            End Try
+        End If
     End Sub
     Protected Sub btnCerrarSesion_Click(sender As Object, e As EventArgs)
 
