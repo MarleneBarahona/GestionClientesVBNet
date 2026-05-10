@@ -10,14 +10,19 @@
 <body>
     <div class="contenedor">
     <form id="form1" runat="server">
-        <asp:Button
-            ID="btnCerrarSesion"
-            runat="server"
-            Text="Cerrar Sesión"
-            OnClick="btnCerrarSesion_Click" />
+        
         <div style="width:900px; margin:auto; margin-top:30px;">
+            <div class="header">
+                
+                <h2>Gestión de Clientes</h2>
 
-            <h2>Gestión de Clientes</h2>
+                <asp:Button
+                    ID="btnCerrarSesion"
+                    runat="server"
+                    Text="Cerrar Sesión"
+                    CssClass="boton btnCerrarSesion"
+                    OnClick="btnCerrarSesion_Click" />
+            </div>
 
             <hr />
 
@@ -68,13 +73,15 @@
                 ID="btnGuardar" 
                 runat="server" 
                 Text="Guardar"
-                OnClick="btnGuardar_Click" />
+                OnClick="btnGuardar_Click" 
+                CssClass="boton"/>
 
             <asp:Button 
                 ID="btnNuevo" 
                 runat="server" 
                 Text="Nuevo"
-                OnClick="btnNuevo_Click" />
+                OnClick="btnNuevo_Click"
+                CssClass="boton" />
 
             <br /><br />
             <asp:Label 
@@ -112,7 +119,8 @@
                                 Text="Eliminar"
                                 CommandName="Eliminar"
                                 CommandArgument='<%# Container.DataItemIndex %>'
-                                CssClass="btnEliminar" />
+                                CssClass="btnEliminar"
+                                OnClientClick="return confirm('¿Desea eliminar este cliente?');"/>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
@@ -126,6 +134,14 @@
             </asp:GridView>
 
             <br />
+
+         <%--   <asp:Button 
+                ID="btnEliminar2" 
+                runat="server" 
+                Text="Eliminar"
+                OnClick="btnEliminar_Click" />
+
+            <br /><br />--%>
 
         </div>
 

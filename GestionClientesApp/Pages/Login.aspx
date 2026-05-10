@@ -37,7 +37,8 @@
                 ID="btnLogin" 
                 runat="server" 
                 Text="Ingresar"
-                OnClick="btnLogin_Click" />
+                OnClick="btnLogin_Click"
+                CssClass="boton"/>
 
             <br /><br />
 

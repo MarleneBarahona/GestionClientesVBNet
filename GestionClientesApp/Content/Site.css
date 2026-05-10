@@ -25,8 +25,7 @@ input[type=password] {
     border: 1px solid #ccc;
 }
 
-input[type=submit],
-button {
+.boton {
     background-color: #0078d4;
     color: white;
     border: none;
@@ -34,12 +33,9 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
-
-input[type=submit]:hover,
-button:hover {
+.boton:hover {
     background-color: #005fa3;
 }
-
 table {
     margin-top: 15px;
 }
@@ -58,4 +54,32 @@ table {
 .gridview td {
     padding: 8px;
     border-bottom: 1px solid #ddd;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h2 {
+        margin: 0;
+    }
+.btnCerrarSesion {
+    margin-left: auto;
+    background-color: #dc3545;
+}
+
+.btnCerrarSesion:hover {
+    background-color: #b02a37;
+}
+.btnEditar {
+    color: #0078d4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btnEliminar {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: bold;
 }
