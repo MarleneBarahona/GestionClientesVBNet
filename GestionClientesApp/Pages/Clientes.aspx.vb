@@ -28,10 +28,7 @@ Partial Class Clientes
                 conexionDB.Open()
 
                 Dim query As String = "
-                    SELECT *
-                    FROM Clientes
-                    WHERE Activo = 1
-                    ORDER BY IdCliente DESC
+                     EXEC SP_CARGAR_CLIENTES
                 "
 
                 Using cmd As New SqlCommand(query, conexionDB)
@@ -151,40 +148,25 @@ Partial Class Clientes
                 If String.IsNullOrEmpty(hfIdCliente.Value) Then
 
                     query = "
-                    INSERT INTO Clientes
-                    (
-                        Nombre,
-                        Apellido,
-                        Correo,
-                        Telefono,
-                        Direccion
-                    )
-                    VALUES
-                    (
+                    EXEC SP_INSERT_CLIENTES
                         @Nombre,
                         @Apellido,
                         @Correo,
                         @Telefono,
                         @Direccion
-                    )
-
-
-                    SELECT SCOPE_IDENTITY()
-                "
+                    "
 
                     'Valida si sí hay IdCliente, es porque es ya existente
                 Else
 
                     query = "
-                    UPDATE Clientes
-                    SET
-                        Nombre = @Nombre,
-                        Apellido = @Apellido,
-                        Correo = @Correo,
-                        Telefono = @Telefono,
-                        Direccion = @Direccion,
-                        FechaUltimaModificacion = GETDATE()
-                    WHERE IdCliente = @IdCliente
+                    EXEC SP_UPDATE_CLIENTES
+                        @IdCliente,
+                        @Nombre,
+                        @Apellido,
+                        @Correo,
+                        @Telefono,
+                        @Direccion
                 "
 
                 End If
@@ -249,60 +231,58 @@ Partial Class Clientes
 
     End Sub
 
-    Protected Sub btnEliminar_Click(sender As Object, e As EventArgs)
+    'Protected Sub btnEliminar_Click(sender As Object, e As EventArgs)
 
-        Try
+    '    Try
 
-            If String.IsNullOrEmpty(hfIdCliente.Value) Then
+    '        If String.IsNullOrEmpty(hfIdCliente.Value) Then
 
-                lblMensaje.Text = "Seleccione un cliente"
+    '            lblMensaje.Text = "Seleccione un cliente"
 
-                Exit Sub
+    '            Exit Sub
 
-            End If
+    '        End If
 
-            Using conexionDB As SqlConnection = Conexion.ObtenerConexion()
+    '        Using conexionDB As SqlConnection = Conexion.ObtenerConexion()
 
-                conexionDB.Open()
+    '            conexionDB.Open()
 
-                'Hace un procesa de desactivacion del cliente, no lo elimina por completo de la BD
-                Dim query As String = "
-                    UPDATE Clientes
-                    SET Activo = 0,
-                    FechaUltimaModificacion = GETDATE()
-                    WHERE IdCliente = @IdCliente
-                    "
+    '            'Hace un procesa de desactivacion del cliente, no lo elimina por completo de la BD
+    '            Dim query As String = "
+    '                EXEC SP_DESACTIVAR_CLIENTES
+    '                    @IdCliente
+    '                "
 
-                Using cmd As New SqlCommand(query, conexionDB)
+    '            Using cmd As New SqlCommand(query, conexionDB)
 
-                    cmd.Parameters.AddWithValue("@IdCliente", hfIdCliente.Value)
+    '                cmd.Parameters.AddWithValue("@IdCliente", hfIdCliente.Value)
 
-                    cmd.ExecuteNonQuery()
+    '                cmd.ExecuteNonQuery()
 
-                    BitacoraHelper.RegistrarAccion(
-                        "Clientes",
-                        Convert.ToInt32(hfIdCliente.Value),
-                        "DELETE",
-                        Session("Usuario").ToString()
-                    )
-                End Using
+    '                BitacoraHelper.RegistrarAccion(
+    '                    "Clientes",
+    '                    Convert.ToInt32(hfIdCliente.Value),
+    '                    "DELETE",
+    '                    Session("Usuario").ToString()
+    '                )
+    '            End Using
 
-            End Using
+    '        End Using
 
-            lblMensaje.Text = "Cliente eliminado correctamente"
-            lblMensaje.ForeColor = Drawing.Color.Green
+    '        lblMensaje.Text = "Cliente eliminado correctamente"
+    '        lblMensaje.ForeColor = Drawing.Color.Green
 
-            LimpiarFormulario()
+    '        LimpiarFormulario()
 
-            CargarClientes()
+    '        CargarClientes()
 
-        Catch ex As Exception
+    '    Catch ex As Exception
 
-            lblMensaje.Text = ex.Message
+    '        lblMensaje.Text = ex.Message
 
-        End Try
+    '    End Try
 
-    End Sub
+    'End Sub
 
     Protected Sub gvClientes_SelectedIndexChanged(sender As Object, e As EventArgs)
 
@@ -338,10 +318,8 @@ Partial Class Clientes
 
                     'Hace un procesa de desactivacion del cliente, no lo elimina por completo de la BD
                     Dim query As String = "
-                    UPDATE Clientes
-                    SET Activo = 0,
-                    FechaUltimaModificacion = GETDATE()
-                    WHERE IdCliente = @IdCliente
+                    EXEC SP_DESACTIVAR_CLIENTES
+                        @IdCliente
                     "
 
                     Using cmd As New SqlCommand(query, conexionDB)

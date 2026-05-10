@@ -40,10 +40,9 @@ Partial Class Login
                 conexionDB.Open()
 
                 Dim query As String = "
-                    SELECT Usuario
-                    FROM Usuarios
-                    WHERE Usuario = @Usuario
-                    AND Contrasena = @Password
+                  EXEC SP_VALIDAR_LOGIN_USUARIO 
+                    @Usuario,
+                    @Password
                 "
 
                 Using cmd As New SqlCommand(query, conexionDB)
