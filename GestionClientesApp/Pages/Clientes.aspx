@@ -16,12 +16,21 @@
                 
                 <h2>Gestión de Clientes</h2>
 
-                <asp:Button
-                    ID="btnCerrarSesion"
-                    runat="server"
-                    Text="Cerrar Sesión"
-                    CssClass="boton btnCerrarSesion"
-                    OnClick="btnCerrarSesion_Click" />
+               <div class="usuarioHeader">
+
+        <asp:Label
+            ID="lblUsuario"
+            runat="server">
+        </asp:Label>
+
+        <asp:Button
+            ID="btnCerrarSesion"
+            runat="server"
+            Text="Cerrar Sesión"
+            CssClass="boton btnCerrarSesion"
+            OnClick="btnCerrarSesion_Click" />
+
+    </div>
             </div>
 
             <hr />

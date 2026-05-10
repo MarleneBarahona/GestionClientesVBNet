@@ -14,6 +14,7 @@ Partial Class Clientes
         End If
 
         If Not IsPostBack Then
+            lblUsuario.Text = "👤Usuario: " & Session("Usuario").ToString()
             CargarClientes()
         End If
         'Response.Write(Seguridad.ObtenerSHA256("admin123")) quitarlo al subir a git
