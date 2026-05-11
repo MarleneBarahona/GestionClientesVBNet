@@ -30,6 +30,15 @@ Aplicación web desarrollada en ASP.NET Web Forms con Visual Basic.NET para la g
 	- Teléfono debe ser formato ####-####
 - Prevención inyecciones SQL
   - Uso de Stored Procedure con parametros
+  - 
+## Base de datos
+- El script de creación de la base de datos con todo lo necesario se encuentra en: /Database/SCRIPT GestionClientesDB.sql
+
+## Configuración inicial del proyecto
+1. Ejecutar SCRIPT GestionClientesDB.sql
+2. Configurar cadena de conexión en Web.config
+3. Ejecutar proyecto
+
 ## Usuario de pruebas:
 User: admin
 Pass: admin123
